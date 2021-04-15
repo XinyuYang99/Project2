@@ -3,11 +3,11 @@ ID,StateName,ClassName,PNGFilename,CollisionFilename
 1,Splash2,PNGRoom,assets/Splash2.png,
 2,Splash3,PNGRoom,assets/Splash3.png,
 3,Instructions,InstructionsScreen,assets/Instructions.png,
-5,Maze1,PNGRoom,assets/Maze1.png,
-6,Maze2,PNGRoom,assets/Maze2.png,
-7,Maze3,PNGRoom,assets/Maze3.png,
-8,Maze4,PNGRoom,assets/Maze4.png,
+5,Maze1,PNGRoom,assets/Maze1.png,assets/Maze1_cl.csv
+6,Maze2,PNGRoom,assets/Maze2.png,assets/Maze2_cl.csv
+7,Maze3,PNGRoom,assets/Maze3.png,assets/Maze3_cl.csv
+8,Maze4,PNGRoom,assets/Maze4.png,assets/Maze4_cl.csv
 9,Shop1,PNGRoom,assets/Shop1.png,
 10,Shop2,PNGRoom,assets/Shop2.png,
-11,Bridge,PNGRoom,assets/Bridge.png,
+11,Bridge,BridgeRoom,assets/Bridge.png,assets/Bridge_cl.csv
 12,End,PNGRoom,assets/End.png,

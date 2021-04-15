@@ -30,6 +30,10 @@ var clickables;           // an array of clickable objects
 // indexes into the array (constants)
 const bag1Index = 0;
 const bag2Index = 1;
+const answer1Index = 2;
+const answer2Index = 3;
+
+var talkedToPiggy = false;
 
 var strings = [];
 var startY = 40;
@@ -64,7 +68,7 @@ function setup() {
 
     // create a sprite and add the 3 animations
     playerSprite = createSprite(width/2, height/2, 80, 80);
-    playerSprite.addAnimation('regular', 'assets/avatars/childm1.png', 'assets/avatars/childm7.png');
+    playerSprite.addAnimation('regular', 'assets/avatars/movement1.png', 'assets/avatars/movement2.png');
 
     // use this to track movement from toom to room in adventureManager.draw()
     adventureManager.setPlayerSprite(playerSprite);
@@ -86,7 +90,7 @@ function draw() {
 	moveSprite();
 
     // this is a function of p5.js, not of this sketch
-	drawSprites();
+	drawSprite(playerSprite);
 
 	if( adventureManager.getStateName() === "Splash1" || adventureManager.getStateName() === "Splash2" || adventureManager.getStateName() === "Splash3") {
 		loadArray();
@@ -115,14 +119,13 @@ function loadArray() {
   strings[1] = "";
   strings[2] = "We have no hierarchy, no wealth, only our own power.";
   strings[3] = "";
-  strings[4] = "One day... I walked into a cave and then...";
-  strings[5] = ""
-  strings[6] = "I came to another world."
+  strings[4] = "One day... I walked into a cave and then... I came to another world.";
   strings[7] = "";
   strings[8] = "";
   strings[9] = "What's that thing in the bottom right corner?";
   strings[10] = "";
-  strings[11] = "Use the ARROW keys to navigate your avatar around.";
+  strings[11] = "Try to click it, and use the ARROW keys to navigate your avatar around.";
+
   fill(255);
   for( let i = 0 ; i < strings.length; i++ ) {
     text( strings[i], width	/ 10, startY + (i * lineHeight) );
@@ -165,6 +168,19 @@ clickableButtonPressed = function() {
 	} 
 
 	// Other non-state changing ones would go here.
+function talkToWeirdy() {
+  if( talkedToWeirdNPC === false ) {
+    print( "turning them on");
+
+    // turn on visibility for buttons
+    for( let i = answer1Index; i <= answer6Index; i++ ) {
+      clickables[i].visible = true;
+    }
+
+    talkedToWeirdNPC = true;
+    print("talked to weidy");
+  }
+}
 }
 
 //-------------- SUBCLASSES / YOUR DRAW CODE CAN GO HERE ---------------//
@@ -201,4 +217,67 @@ class InstructionsScreen extends PNGRoom {
       // Draw text in a box
       text(this.instructionsText, width/6, height/6, this.textBoxWidth, this.textBoxHeight );
     }
+}
+
+// Instructions screen has a backgrounnd image, loaded from the adventureStates table
+// It is sublcassed from PNGRoom, which means all the loading, unloading and drawing of that
+// class can be used. We call super() to call the super class's function as needed
+class BridgeRoom extends PNGRoom {
+  // preload() gets called once upon startup
+  preload() {
+      // this is our image, we will load when we enter the room
+      this.talkBubble = null;
+      this.talkedToNPC = false;  // only draw when we run into it
+      talkedToPiggy = false;
+
+      // NPC position
+      this.drawX = width * 3/4;
+      this.drawY = height * 3/4;
+
+      // load the animation just one time
+      this.weirdNPCSprite = createSprite( this.drawX, this.drawY, 100, 100);
+      this.weirdNPCSprite.addAnimation('regular',  loadAnimation('assets/NPCs/pigmovement1.png', 'assets/NPCs/pigmovement2.png'));
+   }
+
+   load() {
+      // pass to superclass
+      super.load();
+
+      this.talkBubble = loadImage('assets/talkBubble.png');
+      
+      // turn off buttons
+      for( let i = answer1Index; i <= answer2Index; i++ ) {
+       clickables[i].visible = false;
+      }
+    }
+
+    // clears up memory
+    unload() {
+      super.unload();
+
+      this.talkBubble = null;
+      talkedToPiggy = false;
+      print("unloading AHA room");
+    }
+
+   // pass draw function to superclass, then draw sprites, then check for overlap
+  draw() {
+    // PNG room draw
+    super.draw();
+
+    // draws all the sprites in the group
+    //this.weirdNPCSprite.draw();
+    drawSprite(this.weirdNPCSprite)
+    // draws all the sprites in the group - 
+    //drawSprites(this.weirdNPCgroup);//.draw();
+
+    // checks for overlap with ANY sprite in the group, if this happens
+    // talk() function gets called
+    playerSprite.overlap(this.weirdNPCSprite, talkToWeirdy );
+
+     
+    if( this.talkBubble !== null && talkedToPiggy === true ) {
+      image(this.talkBubble, this.drawX + 60, this.drawY - 350);
+    }
+  }
 }
