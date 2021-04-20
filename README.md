@@ -14,3 +14,9 @@ Apply p5.2DAdventure.js, p5.clickable.js. p5.debugScreen.js, p5.js, p5.play.js, 
 Uses Advanture Manager (By Scott Kildall), Clickable Manager (By Scott Kildall), and Interation Manager (By Scott Kildall) to manage the states, background images, clickable and interactions.
 
 Uses sprites to create animation and overlap to achieve interaction.
+
+### Adobe XD Link
+https://xd.adobe.com/view/e8e69e27-86b9-4b00-9484-23b3bef195f0-bdb5/
+
+### Project Link
+https://xarts.usfca.edu/~xyang62/ResourceDistribution/
