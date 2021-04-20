@@ -8,7 +8,9 @@ ID,StateName,ClassName,PNGFilename,CollisionFilename
 6,Maze2,Maze2Room,assets/Maze2.png,assets/Maze2_cl.csv
 7,Maze3,Maze3Room,assets/Maze3.png,assets/Maze3_cl.csv
 8,Maze4,Maze4Room,assets/Maze4.png,assets/Maze4_cl.csv
-9,Shop1,PNGRoom,assets/Shop1.png,
-10,Shop2,PNGRoom,assets/Shop2.png,
-11,Bridge,BridgeRoom,assets/Bridge.png,assets/Bridge_cl.csv
-12,End,EndRoom,assets/End.png,
+9,Shop1,Shop1Room,assets/Shop1.png,
+10,Shop2,Shop2Room,assets/Shop2.png,
+11,Bridge1,Bridge1Room,assets/Bridge1.png,assets/Bridge_cl.csv
+12,Bridge2,Bridge2Room,assets/Bridge2.png,assets/Bridge_cl.csv
+13,End1,PNGRoom,assets/End1.png,
+14,End2,EndRoom,assets/End2.png,

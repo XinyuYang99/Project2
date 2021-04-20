@@ -1,5 +1,5 @@
 ID,Name,State,PNGFilename,Text,x,y,width,height
 0,Bag1,Splash2,,,1150,600,100,128
 1,Bag2,Splash3,,,1150,600,100,128
-2,Answer1,,,"Of course, we can help each other",100,550,100,100
-3,Answer2,,,I am busy now,400,550,100,100
+2,Answer1,,,"Of course, we can help each other",100,550,200,50
+3,Answer2,,,I am busy now,400,550,100,50
