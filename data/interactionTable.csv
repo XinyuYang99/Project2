@@ -1,9 +1,10 @@
 CurrentState,KeyTyped,KeyCode,MouseEvent,ClickableName,MapDirection,NextState
-Splash1,,,,Bag1,,Splash2
-Splash2,,,,Bag2,,Splash3
-Splash3,,,,,E,Instructions
+Splash1,,,mouseReleased,,,Splash2
+Splash2,,,,Bag1,,Splash3
+Splash3,,,,Bag2,,Splash4
+Splash4,,,,,E,Instructions
 Instructions,,,,,S,Maze2
-Instructions,,,,,W,Splash3
+Instructions,,,,,W,Splash4
 Instructions,,,,,E,Maze1
 Maze1,,,,,N,Shop1
 Maze1,,,,,S,Maze4

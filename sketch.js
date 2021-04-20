@@ -26,6 +26,12 @@ var playerAnimation;
 // Clcikables: the manager class
 var clickablesManager;    // the manager class
 var clickables;           // an array of clickable objects
+var bookSprite = [];
+var bookCollected = [];
+var moneySprite = [];
+var moneyCollected = [];
+var totalCollected;
+var maxCollected = 5;
 
 // indexes into the array (constants)
 const bag1Index = 0;
@@ -34,6 +40,7 @@ const answer1Index = 2;
 const answer2Index = 3;
 
 var talkedToPiggy = false;
+var helpedPiggy = false;
 
 var strings = [];
 var startY = 40;
@@ -45,8 +52,9 @@ function preload() {
 	adventureManager = new AdventureManager('data/adventureStates.csv', 'data/interactionTable.csv', 'data/clickableLayout.csv');
 
 	// load all our potential avatar animations here
-	avatarAnimations[0] = loadAnimation('assets/avatars/childm1.png', 'assets/avatars/childm7.png');
-	avatarAnimations[1] = loadAnimation('assets/avatars/teanm1.png', 'assets/avatars/teanm5.png');
+	// avatarAnimations[0] = loadAnimation('assets/avatars/movement1.png', 'assets/avatars/movement6.png');
+	// avatarAnimations[1] = loadAnimation('assets/avatars/book1.png'，'assets/avatars/book2.png');
+ //    avatarAnimations[2] = loadAnimation('assets/avatars/money1.png','assets/avatars/money2.png');
 }
 
 // Setup the adventure manager
@@ -63,12 +71,50 @@ function setup() {
 	// This will load the images, go through state and interation tables, etc
 	adventureManager.setup();
 
+  // adventureManager.setChangedStateCallback(changedState);
+
     textAlign(LEFT);
     textSize(30);
 
     // create a sprite and add the 3 animations
     playerSprite = createSprite(width/2, height/2, 80, 80);
-    playerSprite.addAnimation('regular', 'assets/avatars/movement1.png', 'assets/avatars/movement2.png');
+    playerSprite.addAnimation('regular', 'assets/avatars/movement1.png', 'assets/avatars/movement6.png');
+
+    // make book sprite for maze3
+    moneySprite[0] = createSprite(90, 100, 100, 60);
+    moneySprite[1] = createSprite(800, 300, 100, 60);
+    moneySprite[2] = createSprite(90, 500, 100, 60);
+    moneySprite[3] = createSprite(1200, 85, 100, 60);
+
+    //make book sprite for maze4
+    moneySprite[4] = createSprite(90, 100, 100, 60);
+    moneySprite[5] = createSprite(800, 300, 100, 60);
+    moneySprite[6] = createSprite(90, 500, 100, 60);
+    moneySprite[7] = createSprite(1200, 85, 100, 60);
+
+    //make money sprite for maze1
+    bookSprite[0] = createSprite(200, 100, 100, 100);
+    bookSprite[1] = createSprite(800, 300, 100, 100);
+    bookSprite[2] = createSprite(200, 500, 100, 100);
+    bookSprite[3] = createSprite(1200, 85, 100, 100);
+
+    //make money sprite for maze2
+    bookSprite[4] = createSprite(100, 380, 100, 100);
+    bookSprite[5] = createSprite(1000, 430, 100, 100);
+    bookSprite[6] = createSprite(100, 500, 100, 100);
+    bookSprite[7] = createSprite(1200, 150, 100, 100);
+
+    // add animation for each one...
+    for( let i = 0; i < bookSprite.length ; i++ ) {
+      bookSprite[i].addAnimation('regular', loadAnimation('assets/avatars/book1.png','assets/avatars/book2.png'));
+      bookCollected[i] = false;
+    }
+
+    for (let i = 0; i < moneySprite.length; i++) {
+      moneySprite[i].addAnimation('regular', loadAnimation('assets/avatars/money1.png','assets/avatars/money2.png'));
+      moneyCollected[i] = false
+    }
+
 
     // use this to track movement from toom to room in adventureManager.draw()
     adventureManager.setPlayerSprite(playerSprite);
@@ -92,9 +138,61 @@ function draw() {
     // this is a function of p5.js, not of this sketch
 	drawSprite(playerSprite);
 
-	if( adventureManager.getStateName() === "Splash1" || adventureManager.getStateName() === "Splash2" || adventureManager.getStateName() === "Splash3") {
-		loadArray();
-	}
+    moneyNumber = countMoneyCollected();
+    bookNumber = countBookCollected();
+    totalCollected = moneyNumber + bookNumber;
+    if (totalCollected >= maxCollected) {
+        for( let i = 0; i < bookSprite.length ; i++ ) {
+            bookCollected[i] = false;
+        }
+
+        for (let i = 0; i < moneySprite.length; i++) {
+            moneyCollected[i] = false
+        }
+    }
+
+    if( adventureManager.getStateName() !== "Splash1" && 
+      adventureManager.getStateName() !== "Splash2" &&
+      adventureManager.getStateName() !== "Splash3" &&
+      adventureManager.getStateName() !== "Splash4" && 
+      adventureManager.getStateName() !== "End") {
+        textSize(48);
+        fill(0,255,52);
+        text(moneyNumber, width / 4 - 50, height - 40);
+        fill(0);
+        text(bookNumber, width / 2 + 100, height - 40);
+        if (helpedPiggy === true) {
+            fill(255,0,0);
+            text("1", width - 150, height - 40);
+        }
+        else {
+            fill(255,0,0);
+            text("0", width - 150, height - 40);
+        }
+    }
+}
+
+function countBookCollected() {
+        // count the collected masks
+        let collectedBook = 0;
+    for( let i = 0; i < bookSprite.length; i++ ) {
+           if(bookCollected[i] === true ) {
+                  collectedBook++;
+           }
+    }
+
+    return collectedBook;
+}
+
+function countMoneyCollected() {
+        // count the collected masks
+        let collectedMoney = 0;
+        for( let i = 0; i < moneySprite.length; i++ ) {
+           if(moneyCollected[i] === true ) {
+                  collectedMoney++;
+           }
+    }
+    return collectedMoney;
 }
 
 // pass to adventure manager, this do the draw / undraw events
@@ -111,26 +209,11 @@ function keyPressed() {
 	adventureManager.keyPressed(key); 
 }
 
-
-
-// array appears in the first room as an instructure
-function loadArray() {
-  strings[0] = "This beautiful place called Wisps is where I came from. I lived there for centuries.";
-  strings[1] = "";
-  strings[2] = "We have no hierarchy, no wealth, only our own power.";
-  strings[3] = "";
-  strings[4] = "One day... I walked into a cave and then... I came to another world.";
-  strings[7] = "";
-  strings[8] = "";
-  strings[9] = "What's that thing in the bottom right corner?";
-  strings[10] = "";
-  strings[11] = "Try to click it, and use the ARROW keys to navigate your avatar around.";
-
-  fill(255);
-  for( let i = 0 ; i < strings.length; i++ ) {
-    text( strings[i], width	/ 10, startY + (i * lineHeight) );
-  }
+function mouseReleased() {
+  adventureManager.mouseReleased();
 }
+
+
 
 //-------------- YOUR SPRITE MOVEMENT CODE HERE  ---------------//
 function moveSprite() {
@@ -167,58 +250,75 @@ clickableButtonPressed = function() {
 		adventureManager.clickablePressed(this.name);
 	} 
 
-	// Other non-state changing ones would go here.
-function talkToWeirdy() {
-  if( talkedToWeirdNPC === false ) {
-    print( "turning them on");
+  if( !checkPiggyButtons(this.id) ) {
+    // route to adventure manager unless you are on weird NPC screne
+    adventureManager.clickablePressed(this.name);
+  }
+}
 
+function checkPiggyButtons(idNum) {
+  if( idNum === 2 || idNum === 3 ) {
+    if( idNum === 2) {
+      adventureManager.changeState("Shop2");
+    }
+
+    return true;
+  }
+
+  return false;
+}
+
+function talkedToPiggy() {
+  if( talkedToPiggy === false ) {
     // turn on visibility for buttons
-    for( let i = answer1Index; i <= answer6Index; i++ ) {
+    for( let i = answer1Index; i <= answer2Index; i++ ) {
       clickables[i].visible = true;
     }
 
-    talkedToWeirdNPC = true;
-    print("talked to weidy");
+    talkedToPiggy = true;
   }
 }
-}
 
-//-------------- SUBCLASSES / YOUR DRAW CODE CAN GO HERE ---------------//
-
-// Instructions screen has a backgrounnd image, loaded from the adventureStates table
-// It is sublcassed from PNGRoom, which means all the loading, unloading and drawing of that
-// class can be used. We call super() to call the super class's function as needed
-class InstructionsScreen extends PNGRoom {
-  // Constructor gets calle with the new keyword, when upon constructor for the adventure manager in preload()
-  constructor() {
-    super();    // call super-class constructor to initialize variables in PNGRoom
-
-    this.textBoxWidth = (width/6)*4;
-    this.textBoxHeight = (height/6)*4; 
-
-    // hard-coded, but this could be loaded from a file if we wanted to be more elegant
-    this.instructionsText = "I am now alone, I have to keeping alive here.";
-  }
-
-  // call the PNGRoom superclass's draw function to draw the background image
-  // and draw our instructions on top of this
+class Maze1Room extends PNGRoom {
     draw() {
-      // tint down background image so text is more readable
-      tint(128);
-      
-      // this calls PNGRoom.draw()
-      super.draw();
-      
-      // text draw settings
-      fill(255);
-      textAlign(CENTER);
-      textSize(30);
-
-      // Draw text in a box
-      text(this.instructionsText, width/6, height/6, this.textBoxWidth, this.textBoxHeight );
+        super.draw();
+        for (let i = 0; i <= 3; i++) {
+            drawSprite(bookSprite[i])
+            playerSprite.overlap(bookSprite[i], bookCollected[i]=true);
+        } 
     }
 }
 
+class Maze2Room extends PNGRoom {
+    draw() {
+        super.draw();
+        for (let i = 4; i < bookSprite.length; i++) {
+            drawSprite(bookSprite[i])
+            playerSprite.overlap(bookSprite[i], bookCollected[i]=true);
+        } 
+    }
+}
+
+class Maze3Room extends PNGRoom {
+    draw() {
+        super.draw();
+        for (let i = 0; i <=3; i++) {
+            drawSprite(moneySprite[i])
+            playerSprite.overlap(moneySprite[i], moneyCollected[i]=true);
+        } 
+    }
+}
+
+class Maze4Room extends PNGRoom {
+    draw() {
+        super.draw();
+        for (let i = 4; i < moneySprite.length; i++) {
+            drawSprite(moneySprite[i])
+            playerSprite.overlap(moneySprite[i], moneyCollected[i]=true);
+        } 
+
+    }
+}
 // Instructions screen has a backgrounnd image, loaded from the adventureStates table
 // It is sublcassed from PNGRoom, which means all the loading, unloading and drawing of that
 // class can be used. We call super() to call the super class's function as needed
@@ -231,12 +331,12 @@ class BridgeRoom extends PNGRoom {
       talkedToPiggy = false;
 
       // NPC position
-      this.drawX = width * 3/4;
-      this.drawY = height * 3/4;
+      this.drawX = width * 1/4 - 150;
+      this.drawY = height * 3/4 - 50;
 
       // load the animation just one time
-      this.weirdNPCSprite = createSprite( this.drawX, this.drawY, 100, 100);
-      this.weirdNPCSprite.addAnimation('regular',  loadAnimation('assets/NPCs/pigmovement1.png', 'assets/NPCs/pigmovement2.png'));
+      this.piggySprite = createSprite( this.drawX, this.drawY, 100, 100);
+      this.piggySprite.addAnimation('regular',  loadAnimation('assets/NPCs/pigmovement1.png', 'assets/NPCs/pigmovement6.png'));
    }
 
    load() {
@@ -257,7 +357,6 @@ class BridgeRoom extends PNGRoom {
 
       this.talkBubble = null;
       talkedToPiggy = false;
-      print("unloading AHA room");
     }
 
    // pass draw function to superclass, then draw sprites, then check for overlap
@@ -267,17 +366,30 @@ class BridgeRoom extends PNGRoom {
 
     // draws all the sprites in the group
     //this.weirdNPCSprite.draw();
-    drawSprite(this.weirdNPCSprite)
+    drawSprite(this.piggySprite)
     // draws all the sprites in the group - 
     //drawSprites(this.weirdNPCgroup);//.draw();
 
     // checks for overlap with ANY sprite in the group, if this happens
     // talk() function gets called
-    playerSprite.overlap(this.weirdNPCSprite, talkToWeirdy );
-
+    playerSprite.overlap(this.piggySprite, talkedToPiggy);
      
     if( this.talkBubble !== null && talkedToPiggy === true ) {
       image(this.talkBubble, this.drawX + 60, this.drawY - 350);
     }
   }
+}
+
+class EndRoom extends PNGRoom {
+    draw() {
+        super.draw();
+        let totalSocre = moneyNumber * 1 + bookNumber * 2;
+        if (helpedPiggy = true) {
+            totalSocre += 3;
+        }
+        textSize(50);
+        textStyle(BOLD);
+        fill(255,0,0);
+        text(totalSocre, width/2, height/2 + 10);
+    }
 }
